@@ -151,7 +151,8 @@ button.danger{background:#c0392b;color:#fff}
         '<div class="inf"><div class="m">'+esc(p.model)+'</div><div class="n">'+esc(p.name)+'</div></div>'+
         '<input type="text" class="prc" dir="ltr" placeholder="السعر" value="'+esc(p.price)+'" data-fn="'+esc(p.fn)+'">'+
         '<button data-save="'+esc(p.fn)+'">حفظ</button>'+
-        '<button class="ghost" data-edit="'+esc(p.fn)+'">تعديل</button></div>';
+        '<button class="ghost" data-edit="'+esc(p.fn)+'">تعديل</button>'+
+        (p.added?'<button class="danger" data-delprod="'+esc(p.fn)+'">مسح</button>':'')+'</div>';
     }).join("")+(list.length>80?'<p class="small">أول 80 نتيجة - ضيّق البحث</p>':"");
   }
   $("q").addEventListener("input",drawList);
@@ -170,6 +171,10 @@ button.danger{background:#c0392b;color:#fff}
       db.collection("products").doc(encId(fn)).set(doc,{merge:true}).then(function(){
         t.disabled=false;t.textContent="حفظ";loadOver();
       }).catch(function(err){t.disabled=false;t.textContent="حفظ";alert("حصل خطأ: "+err.message);});
+    }
+    if(t.hasAttribute("data-delprod")){
+      var fn3=t.getAttribute("data-delprod");
+      if(confirm("متأكد من مسح المنتج "+fn3+"؟"))db.collection("products").doc(encId(fn3)).delete().then(loadOver).catch(function(err){alert("حصل خطأ: "+err.message);});
     }
     if(t.hasAttribute("data-edit")){
       var fn2=t.getAttribute("data-edit");
