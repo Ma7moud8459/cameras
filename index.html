@@ -39,9 +39,10 @@ function draw(){
   const q=document.getElementById('q').value.trim().toLowerCase();
   const list=P.filter(p=>(tab==='ALL'||p.tab===tab)&&(!q||p.model.toLowerCase().includes(q)||p.name.toLowerCase().includes(q)));
   count.textContent=list.length+' منتج';
-  grid.innerHTML=list.map(p=>`<a class="card" href="p/${p.fn}.html"><img src="${p.img||('img/'+p.fn+'.jpg')}" alt="${p.model}" loading="lazy"><div class="t">${p.name}</div><div class="m">${p.model}</div>${p.price?'<div class="pr">'+p.price+'</div>':''}</a>`).join('');
+  grid.innerHTML=list.map(p=>`<a class="card" href="${p.added?('p/new.html?fn='+encodeURIComponent(p.fn)):('p/'+p.fn+'.html')}"><img src="${p.img||('img/'+p.fn+'.jpg')}" alt="${p.model}" loading="lazy"><div class="t">${p.name}</div><div class="m">${p.model}</div>${p.price?'<div class="pr">'+p.price+'</div>':''}</a>`).join('');
 }
 tabs();draw();
+window.P=P;window.draw=draw;
 </script>
 <script src="firebase-config.js"></script><script src="overlay.js"></script>
 </body></html>

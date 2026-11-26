@@ -51,7 +51,7 @@
     Object.keys(map).forEach(function (id) {
       var m = map[id];
       if (m && m.added && m.fn && !window.P.some(function (p) { return p.fn === m.fn; })) {
-        window.P.push({ fn: m.fn, tab: m.tab || "NONCCTV", model: m.model || m.fn, name: m.name || m.fn, price: m.price, img: m.img });
+        window.P.push({ fn: m.fn, tab: m.tab || "NONCCTV", model: m.model || m.fn, name: m.name || m.fn, price: m.price, img: m.img, added: true });
         changed = true;
       }
     });
