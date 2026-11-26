@@ -55,3 +55,11 @@ article.body{max-width:680px;margin:0 auto;line-height:2.1;font-size:16.5px;colo
 details.art{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:10px 0}
 details.art summary{cursor:pointer;font-weight:700;color:var(--gold)}
 .artbody{padding-top:8px;line-height:1.9}
+.brandlogo{width:26px;height:26px;object-fit:contain;border-radius:6px;vertical-align:middle;background:#fff}
+.offerbar{background:var(--gold);color:#1a1a1a;text-align:center;font-weight:700;padding:10px 14px;font-size:15px}
+footer .channels{margin-top:10px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+footer .channels a{color:var(--gold);text-decoration:none}
+footer .addr{margin-top:8px;color:var(--mut);font-size:13px}
+footer .small{margin-top:8px;font-size:12px;color:var(--mut)}
+.gone{background:#4a1626;color:#ffb3c0;border-radius:10px;padding:10px;margin-bottom:14px;font-size:14px}
+.wafloat{position:fixed;bottom:18px;left:18px;z-index:50;background:#22c55e;color:#fff;border-radius:50px;padding:12px 20px;font-weight:700;text-decoration:none;box-shadow:0 6px 20px #0006;font-size:15px}

@@ -34,6 +34,7 @@
       document.title=(m.model||fn)+" - "+(m.name||"");
       document.getElementById("cat").textContent=T[m.tab]||"منتج";
       document.getElementById("model").textContent=m.model||fn;
+      var wa=document.querySelector(".cta a.btn"); if(wa&&wa.href.indexOf("wa.me")>-1) wa.href=wa.href+"?text="+encodeURIComponent("السلام عليكم، أستفسر عن الموديل "+(m.model||fn));
       document.getElementById("name").textContent=m.name||"";
       if(m.img){var ib=document.getElementById("imgbox");ib.style.display="";document.getElementById("img").src=m.img;document.getElementById("img").alt=m.model||fn;}
       if(Array.isArray(m.feats)&&m.feats.length)document.getElementById("feats").innerHTML=m.feats.map(function(x){return "<div>"+esc(x)+"</div>";}).join("");

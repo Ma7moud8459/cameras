@@ -5,7 +5,7 @@
 <meta name="description" content="كتالوج كامل: كاميرات مراقبة هيكفيجن وإيزفيز، أجهزة تسجيل DVR وNVR، سويتشات وشاشات وإكسسوارات. كل موديل بكوده وصورته وتفاصيله. للتركيب والاستفسار اتصال أو واتساب 0569278151.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css"><link rel="canonical" href="https://ma7moud8459.github.io/cameras/">
+<link rel="stylesheet" href="style.css"><link rel="canonical" href="https://ma7moud8459.github.io/cameras/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"كاميرات مراقبة وأنظمة أمن","telephone":"+966569278151","areaServed":"الدمام والمنطقة الشرقية","url":"https://ma7moud8459.github.io/cameras/"}</script>
 </head><body><div class="topbar"><span class="brand"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f5b301" stroke-width="2"><path d="M2 7l11-3 2 4-11 3z"/><path d="M13 8l8 3v7l-8-2z"/><circle cx="17" cy="13.5" r="2"/></svg> كاميرات مراقبة وأنظمة أمن</span><a class="phone" href="tel:+966569278151">0569278151</a></div><section class="hero">
 <img class="bg" src="hero.jpg" alt="">
 <div class="veil"></div>
@@ -42,7 +42,7 @@ function draw(){
   grid.innerHTML=list.map(p=>`<a class="card" href="${p.added?('p/new.html?fn='+encodeURIComponent(p.fn)):('p/'+p.fn+'.html')}"><img src="${p.img||('img/'+p.fn+'.jpg')}" alt="${p.model}" loading="lazy"><div class="t">${p.name}</div><div class="m">${p.model}</div>${p.price?'<div class="pr">'+p.price+'</div>':''}</a>`).join('');
 }
 tabs();draw();
-window.P=P;window.draw=draw;
+window.P=P;window.draw=draw;window.T=T;
 </script>
 <script src="firebase-config.js"></script><script src="overlay.js"></script>
 </body></html>

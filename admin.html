@@ -48,6 +48,7 @@ button.danger{background:#c0392b;color:#fff}
     <div class="tabs">
       <button id="tp" class="on">المنتجات والأسعار</button>
       <button id="ta">المواضيع</button>
+      <button id="ts">إعدادات الموقع</button>
     </div>
 
     <div id="prods">
@@ -64,6 +65,46 @@ button.danger{background:#c0392b;color:#fff}
       </div>
       <input type="text" id="q" placeholder="ابحث بالموديل أو الاسم...">
       <div id="plist" style="margin-top:10px"></div>
+    </div>
+
+    <div id="sets" class="hide">
+      <div class="box">
+        <b>هوية الموقع</b>
+        <label>اسم الموقع (فاضي = الاسم الحالي)</label><input type="text" id="sbrand">
+        <label>الشعار (صورة صغيرة - اختياري)</label><input type="file" id="slogo" accept="image/*">
+        <div class="small" id="slogocur"></div>
+        <label>عنوان الصفحة الرئيسية (الهيدر)</label><input type="text" id="sheroTitle">
+        <label>النص تحت العنوان</label><input type="text" id="sheroSub">
+        <label>وصف الموقع في جوجل</label><input type="text" id="smetaDesc">
+      </div>
+      <div class="box">
+        <b>التواصل</b>
+        <label>رقم الجوال زي ما يظهر للناس (مثال: 0569278151)</label><input type="text" id="sphoneShow" dir="ltr">
+        <label>رقم الاتصال بالكود الدولي (مثال: 966569278151)</label><input type="text" id="stel" dir="ltr">
+        <label>رقم الواتساب بالكود الدولي</label><input type="text" id="swa" dir="ltr">
+        <label>العنوان</label><input type="text" id="saddr">
+        <label>لينك الموقع على الخريطة</label><input type="text" id="smap" dir="ltr">
+        <label>تيك توك (لينك)</label><input type="text" id="stiktok" dir="ltr">
+        <label>انستقرام (لينك)</label><input type="text" id="sinsta" dir="ltr">
+        <label>سناب شات (لينك)</label><input type="text" id="ssnap" dir="ltr">
+        <label>إكس / تويتر (لينك)</label><input type="text" id="sx" dir="ltr">
+        <label>حراج (لينك)</label><input type="text" id="sharaj" dir="ltr">
+        <label>نص الفوتر</label><input type="text" id="sfooter">
+      </div>
+      <div class="box">
+        <b>أسماء الأقسام</b>
+        <label>قسم هيكفيجن</label><input type="text" id="scHIK">
+        <label>قسم إيزفيز</label><input type="text" id="scEZVIZ">
+        <label>قسم الشبكات</label><input type="text" id="scNET">
+        <label>قسم الشاشات والإكسسوارات</label><input type="text" id="scNONCCTV">
+      </div>
+      <div class="box">
+        <b>شريط العروض</b>
+        <label><input type="checkbox" id="sbannerOn" style="width:auto"> إظهار شريط عرض فوق الموقع</label>
+        <label>نص العرض</label><input type="text" id="sbanner">
+      </div>
+      <div style="margin:12px 0"><button id="ssave">حفظ الإعدادات</button> <button class="ghost" id="sbackup">نسخة احتياطية (تحميل)</button></div>
+      <div id="smsg"></div>
     </div>
 
     <div id="arts" class="hide">
@@ -134,11 +175,11 @@ button.danger{background:#c0392b;color:#fff}
     var list=base.map(function(p){
       var m=over[encId(p.fn)]||{};
       seen[encId(p.fn)]=1;
-      return {fn:p.fn,model:p.model,name:m.name||p.name,price:m.price||"",feats:m.feats||null,img:m.img||("img/"+p.fn+".jpg"),added:false};
+      return {fn:p.fn,model:p.model,name:m.name||p.name,price:m.price||"",feats:m.feats||null,img:m.img||("img/"+p.fn+".jpg"),added:false,hidden:!!m.hidden};
     });
     Object.keys(over).forEach(function(id){
       var m=over[id];
-      if(m&&m.added&&!seen[id]) list.unshift({fn:m.fn,model:m.model||m.fn,name:m.name||m.fn,price:m.price||"",feats:m.feats||[],img:m.img||"",added:true});
+      if(m&&m.added&&!seen[id]) list.unshift({fn:m.fn,model:m.model||m.fn,name:m.name||m.fn,price:m.price||"",feats:m.feats||[],img:m.img||"",added:true,hidden:!!m.hidden});
     });
     return list;
   }
@@ -152,6 +193,7 @@ button.danger{background:#c0392b;color:#fff}
         '<input type="text" class="prc" dir="ltr" placeholder="السعر" value="'+esc(p.price)+'" data-fn="'+esc(p.fn)+'">'+
         '<button data-save="'+esc(p.fn)+'">حفظ</button>'+
         '<button class="ghost" data-edit="'+esc(p.fn)+'">تعديل</button>'+
+        '<button class="ghost" data-hide="'+esc(p.fn)+'">'+(p.hidden?'إظهار':'إخفاء')+'</button>'+
         (p.added?'<button class="danger" data-delprod="'+esc(p.fn)+'">مسح</button>':'')+'</div>';
     }).join("")+(list.length>80?'<p class="small">أول 80 نتيجة - ضيّق البحث</p>':"");
   }
@@ -175,6 +217,11 @@ button.danger{background:#c0392b;color:#fff}
     if(t.hasAttribute("data-delprod")){
       var fn3=t.getAttribute("data-delprod");
       if(confirm("متأكد من مسح المنتج "+fn3+"؟"))db.collection("products").doc(encId(fn3)).delete().then(loadOver).catch(function(err){alert("حصل خطأ: "+err.message);});
+    }
+    if(t.hasAttribute("data-hide")){
+      var fnh=t.getAttribute("data-hide");
+      var ph=merged().find(function(x){return x.fn===fnh;});
+      db.collection("products").doc(encId(fnh)).set({fn:fnh,model:ph.model,hidden:!ph.hidden},{merge:true}).then(loadOver).catch(function(err){alert("حصل خطأ: "+err.message);});
     }
     if(t.hasAttribute("data-edit")){
       var fn2=t.getAttribute("data-edit");
@@ -230,8 +277,67 @@ button.danger{background:#c0392b;color:#fff}
     if(id&&confirm("متأكد من مسح الموضوع؟"))db.collection("articles").doc(id).delete().then(drawArts);
   });
 
-  $("tp").addEventListener("click",function(){$("tp").className="on";$("ta").className="";$("prods").classList.remove("hide");$("arts").classList.add("hide");});
-  $("ta").addEventListener("click",function(){$("ta").className="on";$("tp").className="";$("arts").classList.remove("hide");$("prods").classList.add("hide");drawArts();});
+  function showTab(id){["tp","ta","ts"].forEach(function(x){$(x).className=x===id?"on":"";});["prods","arts","sets"].forEach(function(x){$(x).classList.add("hide");});}
+  $("tp").addEventListener("click",function(){showTab("tp");$("prods").classList.remove("hide");});
+  $("ta").addEventListener("click",function(){showTab("ta");$("arts").classList.remove("hide");drawArts();});
+  $("ts").addEventListener("click",function(){showTab("ts");$("sets").classList.remove("hide");loadSettings();});
+
+  // إعدادات الموقع
+  function loadSettings(){
+    db.collection("settings").doc("site").get().then(function(d){
+      var s=d.exists?d.data():{};
+      $("sbrand").value=s.brand||"";$("sheroTitle").value=s.heroTitle||"";$("sheroSub").value=s.heroSub||"";
+      $("smetaDesc").value=s.metaDesc||"";$("sphoneShow").value=s.phoneDisplay||"";$("stel").value=s.tel||"";
+      $("swa").value=s.whatsapp||"";$("saddr").value=s.address||"";$("smap").value=s.mapUrl||"";
+      $("stiktok").value=s.tiktok||"";$("sinsta").value=s.instagram||"";$("ssnap").value=s.snapchat||"";
+      $("sx").value=s.x||"";$("sharaj").value=s.haraj||"";$("sfooter").value=s.footerText||"";
+      var c=s.cats||{};
+      $("scHIK").value=c.HIK||"";$("scEZVIZ").value=c.EZVIZ||"";$("scNET").value=c.NET||"";$("scNONCCTV").value=c.NONCCTV||"";
+      $("sbannerOn").checked=!!s.bannerOn;$("sbanner").value=s.bannerText||"";
+      $("slogocur").textContent=s.logo?"في شعار محفوظ حاليًا":"";
+    });
+  }
+  $("ssave").addEventListener("click",function(){
+    function v(id){return $(id).value.trim();}
+    var doc={brand:v("sbrand"),heroTitle:v("sheroTitle"),heroSub:v("sheroSub"),metaDesc:v("smetaDesc"),
+      phoneDisplay:v("sphoneShow"),tel:v("stel"),whatsapp:v("swa"),address:v("saddr"),mapUrl:v("smap"),
+      tiktok:v("stiktok"),instagram:v("sinsta"),snapchat:v("ssnap"),x:v("sx"),haraj:v("sharaj"),
+      footerText:v("sfooter"),bannerOn:$("sbannerOn").checked,bannerText:v("sbanner"),
+      cats:{HIK:v("scHIK"),EZVIZ:v("scEZVIZ"),NET:v("scNET"),NONCCTV:v("scNONCCTV")}};
+    $("ssave").disabled=true;
+    var file=$("slogo").files[0];
+    function save(){return db.collection("settings").doc("site").set(doc,{merge:true}).then(function(){
+      msg($("smsg"),"اتحفظت - التغييرات ظاهرة على الموقع",true);$("ssave").disabled=false;$("slogo").value="";
+    });}
+    if(file){shrinkLogo(file).then(function(url){doc.logo=url;return save();}).catch(function(err){$("ssave").disabled=false;msg($("smsg"),err.message);});}
+    else{save().catch(function(err){$("ssave").disabled=false;msg($("smsg"),"خطأ: "+err.message);});}
+  });
+  function shrinkLogo(file){
+    return new Promise(function(ok,no){
+      var img=new Image();
+      img.onload=function(){
+        var max=200,w=img.width,h=img.height;
+        if(w>max){h=Math.round(h*max/w);w=max;}
+        if(h>max){w=Math.round(w*max/h);h=max;}
+        var c=document.createElement("canvas");c.width=w;c.height=h;
+        c.getContext("2d").drawImage(img,0,0,w,h);
+        URL.revokeObjectURL(img.src);
+        ok(c.toDataURL("image/png"));
+      };
+      img.onerror=function(){no(new Error("الملف ده مش صورة"));};
+      img.src=URL.createObjectURL(file);
+    });
+  }
+  // نسخة احتياطية: كل البيانات في ملف JSON
+  $("sbackup").addEventListener("click",function(){
+    Promise.all([db.collection("products").get(),db.collection("articles").get(),db.collection("settings").doc("site").get()]).then(function(r){
+      var data={products:{},articles:{},settings:r[2].exists?r[2].data():{}};
+      r[0].forEach(function(d){data.products[d.id]=d.data();});
+      r[1].forEach(function(d){data.articles[d.id]=d.data();});
+      var blob=new Blob([JSON.stringify(data,null,1)],{type:"application/json"});
+      var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="site-backup.json";a.click();
+    });
+  });
 
   $("go").addEventListener("click",function(){
     auth.signInWithEmailAndPassword($("em").value.trim(),$("pw").value).catch(function(err){
