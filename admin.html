@@ -87,14 +87,33 @@ button.danger{background:#c0392b;color:#fff}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
 (function(){
   var cfg=window.FIREBASE_CONFIG;
   if(!cfg||!cfg.apiKey||cfg.apiKey==="PENDING"){document.getElementById('pending').classList.remove('hide');return;}
   firebase.initializeApp(cfg);
-  var auth=firebase.auth(),db=firebase.firestore(),st=firebase.storage();
+  var auth=firebase.auth(),db=firebase.firestore();
+  // صورة المنتج الجديد: بتتصغّر في المتصفح وتتحفظ داخل قاعدة البيانات نفسها (من غير خدمة تخزين مدفوعة)
+  function shrinkImage(file){
+    return new Promise(function(ok,no){
+      var img=new Image();
+      img.onload=function(){
+        var max=800,w=img.width,h=img.height;
+        if(w>max){h=Math.round(h*max/w);w=max;}
+        if(h>max){w=Math.round(w*max/h);h=max;}
+        var c=document.createElement("canvas");c.width=w;c.height=h;
+        var ctx=c.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);
+        URL.revokeObjectURL(img.src);
+        var q=0.85,url=c.toDataURL("image/jpeg",q);
+        while(url.length>650000&&q>0.4){q-=0.1;url=c.toDataURL("image/jpeg",q);}
+        if(url.length>900000){no(new Error("الصورة كبيرة أوي - جرب صورة أصغر"));return;}
+        ok(url);
+      };
+      img.onerror=function(){no(new Error("الملف ده مش صورة"));};
+      img.src=URL.createObjectURL(file);
+    });
+  }
   function $(id){return document.getElementById(id);}
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
   function msg(el,t,ok){el.className="msg "+(ok?"ok":"err");el.textContent=t;}
@@ -179,9 +198,9 @@ button.danger{background:#c0392b;color:#fff}
       $("aadd").disabled=false;loadOver();
     });}
     if(file){
-      st.ref("img/"+encId(fn)).put(file).then(function(s){return s.ref.getDownloadURL();}).then(function(url){
+      shrinkImage(file).then(function(url){
         doc.img=url;return save();
-      }).catch(function(err){$("aadd").disabled=false;msg($("amsg"),"خطأ في رفع الصورة: "+err.message);});
+      }).catch(function(err){$("aadd").disabled=false;msg($("amsg"),err.message);});
     }else{save().catch(function(err){$("aadd").disabled=false;msg($("amsg"),"خطأ: "+err.message);});}
   });
 
