@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة التحكم</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1526;--bg2:#101d36;--card:#16264a;--line:#243a6b;--ink:#eef2ff;--mut:#9fb0d8;--gold:#f5b301}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo,sans-serif}
+.top{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--line)}
+.top b{font-size:17px}.top a{color:var(--gold);text-decoration:none}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+input,textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px;font-family:inherit;font-size:15px}
+label{font-size:13px;color:var(--mut);display:block;margin:10px 0 4px}
+button{background:var(--gold);color:#1a1a1a;border:0;border-radius:10px;padding:10px 18px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+button.danger{background:#c0392b;color:#fff}
+.tabs{display:flex;gap:8px;margin:14px 0}
+.tabs button{flex:1;background:var(--card);color:var(--ink)}
+.tabs button.on{background:var(--gold);color:#1a1a1a}
+.row{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin:8px 0}
+.row img{width:56px;height:56px;object-fit:contain;background:#fff;border-radius:8px}
+.row .inf{flex:1;min-width:0}.row .m{color:var(--gold);font-size:13px;direction:ltr;text-align:right}
+.row .n{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row input[type=text].prc{width:110px;flex:none;padding:6px}
+.row button{padding:6px 12px;font-size:13px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.msg{padding:10px;border-radius:10px;margin:10px 0;font-size:14px}
+.msg.err{background:#4a1626;color:#ffb3c0}.msg.ok{background:#14391f;color:#9fe8b3}
+.center{max-width:340px;margin:60px auto}
+.small{font-size:12px;color:var(--mut)}
+.artrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hide{display:none}
+</style>
+</head><body>
+<div class="top"><b>لوحة التحكم</b><span><a href="index.html">الموقع</a> &nbsp; <a href="#" id="out" class="hide">خروج</a></span></div>
+<div class="wrap">
+  <div id="login" class="center hide">
+    <h2>تسجيل الدخول</h2>
+    <label>الإيميل</label><input type="email" id="em" autocomplete="username">
+    <label>الباسورد</label><input type="password" id="pw" autocomplete="current-password">
+    <div style="margin-top:14px"><button id="go">دخول</button></div>
+    <div id="lmsg"></div>
+  </div>
+
+  <div id="app" class="hide">
+    <div class="tabs">
+      <button id="tp" class="on">المنتجات والأسعار</button>
+      <button id="ta">المواضيع</button>
+    </div>
+
+    <div id="prods">
+      <div class="box">
+        <b>إضافة منتج جديد</b> <span class="small">(المنتجات الأصلية تتعدل من القايمة تحت)</span>
+        <label>كود المنتج (حروف وأرقام إنجليزي، من غير مسافات - مثال: DS-2CD1043G2-LIUF)</label><input type="text" id="afn" dir="ltr">
+        <label>اسم المنتج</label><input type="text" id="aname">
+        <label>القسم</label><select id="atab"><option value="HIK">كاميرات وأجهزة هيكفيجن</option><option value="EZVIZ">كاميرات إيزفيز</option><option value="NET">أجهزة الشبكات</option><option value="NONCCTV">شاشات وإكسسوارات</option></select>
+        <label>المميزات (كل ميزة في سطر)</label><textarea id="afeats" rows="3"></textarea>
+        <label>السعر (اختياري - اكتبه زي ما تحب يظهر، مثال: 1850 أو 1850 جنيه)</label><input type="text" id="aprice" dir="ltr">
+        <label>صورة المنتج</label><input type="file" id="aimg" accept="image/*">
+        <div style="margin-top:12px"><button id="aadd">إضافة المنتج</button></div>
+        <div id="amsg"></div>
+      </div>
+      <input type="text" id="q" placeholder="ابحث بالموديل أو الاسم...">
+      <div id="plist" style="margin-top:10px"></div>
+    </div>
+
+    <div id="arts" class="hide">
+      <div class="box">
+        <b>موضوع جديد</b>
+        <label>العنوان</label><input type="text" id="tt">
+        <label>النص</label><textarea id="tb" rows="6"></textarea>
+        <div style="margin-top:12px"><button id="tadd">نشر الموضوع</button></div>
+        <div id="tmsg"></div>
+      </div>
+      <div id="alist"></div>
+    </div>
+  </div>
+
+  <div id="pending" class="center hide">
+    <h2>لوحة التحكم قيد التجهيز</h2>
+    <p class="small">قاعدة البيانات لسه بتتظبط. جرب تاني بعد ما يتأكد التفعيل.</p>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function(){
+  var cfg=window.FIREBASE_CONFIG;
+  if(!cfg||!cfg.apiKey||cfg.apiKey==="PENDING"){document.getElementById('pending').classList.remove('hide');return;}
+  firebase.initializeApp(cfg);
+  var auth=firebase.auth(),db=firebase.firestore(),st=firebase.storage();
+  function $(id){return document.getElementById(id);}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  function msg(el,t,ok){el.className="msg "+(ok?"ok":"err");el.textContent=t;}
+  function encId(fn){return encodeURIComponent(fn);}
+
+  var base=[],over={};
+  fetch("products.json").then(function(r){return r.json();}).then(function(P){base=P;loadOver();});
+
+  function loadOver(){
+    db.collection("products").get().then(function(q){
+      over={};q.forEach(function(d){over[d.id]=d.data();});
+      drawList();
+    });
+  }
+
+  function merged(){
+    var seen={};
+    var list=base.map(function(p){
+      var m=over[encId(p.fn)]||{};
+      seen[encId(p.fn)]=1;
+      return {fn:p.fn,model:p.model,name:m.name||p.name,price:m.price||"",feats:m.feats||null,img:m.img||("img/"+p.fn+".jpg"),added:false};
+    });
+    Object.keys(over).forEach(function(id){
+      var m=over[id];
+      if(m&&m.added&&!seen[id]) list.unshift({fn:m.fn,model:m.model||m.fn,name:m.name||m.fn,price:m.price||"",feats:m.feats||[],img:m.img||"",added:true});
+    });
+    return list;
+  }
+
+  function drawList(){
+    var q=($("q").value||"").trim().toLowerCase();
+    var list=merged().filter(function(p){return !q||p.model.toLowerCase().indexOf(q)>-1||p.name.toLowerCase().indexOf(q)>-1;});
+    $("plist").innerHTML=list.slice(0,80).map(function(p,i){
+      return '<div class="row">'+(p.img?'<img src="'+esc(p.img)+'" loading="lazy">':"")+
+        '<div class="inf"><div class="m">'+esc(p.model)+'</div><div class="n">'+esc(p.name)+'</div></div>'+
+        '<input type="text" class="prc" dir="ltr" placeholder="السعر" value="'+esc(p.price)+'" data-fn="'+esc(p.fn)+'">'+
+        '<button data-save="'+esc(p.fn)+'">حفظ</button>'+
+        '<button class="ghost" data-edit="'+esc(p.fn)+'">تعديل</button></div>';
+    }).join("")+(list.length>80?'<p class="small">أول 80 نتيجة - ضيّق البحث</p>':"");
+  }
+  $("q").addEventListener("input",drawList);
+
+  $("plist").addEventListener("click",function(e){
+    var t=e.target;
+    if(t.hasAttribute("data-save")){
+      var fn=t.getAttribute("data-save");
+      var inp=document.querySelector('input.prc[data-fn="'+CSS.escape(fn)+'"]');
+      var p=merged().find(function(x){return x.fn===fn;});
+      var doc={fn:fn,model:p.model,name:p.name,price:inp.value.trim()};
+      if(p.added)doc.added=true;
+      if(p.feats)doc.feats=p.feats;
+      if(p.img&&p.added)doc.img=p.img;
+      t.disabled=true;t.textContent="...";
+      db.collection("products").doc(encId(fn)).set(doc,{merge:true}).then(function(){
+        t.disabled=false;t.textContent="حفظ";loadOver();
+      }).catch(function(err){t.disabled=false;t.textContent="حفظ";alert("حصل خطأ: "+err.message);});
+    }
+    if(t.hasAttribute("data-edit")){
+      var fn2=t.getAttribute("data-edit");
+      var p2=merged().find(function(x){return x.fn===fn2;});
+      var name=prompt("اسم المنتج:",p2.name);
+      if(name===null)return;
+      var feats=prompt("المميزات (كل ميزة في سطر):",(p2.feats||[]).join("\n"));
+      var doc={fn:fn2,name:name.trim()};
+      if(feats!==null)doc.feats=feats.split("\n").map(function(s){return s.trim();}).filter(Boolean);
+      db.collection("products").doc(encId(fn2)).set(doc,{merge:true}).then(loadOver).catch(function(err){alert("حصل خطأ: "+err.message);});
+    }
+  });
+
+  $("aadd").addEventListener("click",function(){
+    var fn=$("afn").value.trim();
+    if(!fn||/\s/.test(fn)||!/^[A-Za-z0-9\/_.-]+$/.test(fn)){msg($("amsg"),"اكتب كود صحيح (إنجليزي من غير مسافات)");return;}
+    if(!$("aname").value.trim()){msg($("amsg"),"اكتب اسم المنتج");return;}
+    var doc={fn:fn,model:fn,name:$("aname").value.trim(),tab:$("atab").value,
+      feats:$("afeats").value.split("\n").map(function(s){return s.trim();}).filter(Boolean),
+      price:$("aprice").value.trim(),added:true};
+    $("aadd").disabled=true;
+    var file=$("aimg").files[0];
+    function save(){return db.collection("products").doc(encId(fn)).set(doc).then(function(){
+      msg($("amsg"),"تمت الإضافة - المنتج ظهر على الموقع",true);
+      $("afn").value=$("aname").value=$("afeats").value=$("aprice").value="";$("aimg").value="";
+      $("aadd").disabled=false;loadOver();
+    });}
+    if(file){
+      st.ref("img/"+encId(fn)).put(file).then(function(s){return s.ref.getDownloadURL();}).then(function(url){
+        doc.img=url;return save();
+      }).catch(function(err){$("aadd").disabled=false;msg($("amsg"),"خطأ في رفع الصورة: "+err.message);});
+    }else{save().catch(function(err){$("aadd").disabled=false;msg($("amsg"),"خطأ: "+err.message);});}
+  });
+
+  function drawArts(){
+    db.collection("articles").orderBy("ts","desc").get().then(function(q){
+      $("alist").innerHTML="";q.forEach(function(d){
+        var a=d.data();
+        var el=document.createElement("div");el.className="row";
+        el.innerHTML='<div class="inf artrow"><b>'+esc(a.title)+'</b></div><button class="danger" data-del="'+d.id+'">مسح</button>';
+        $("alist").appendChild(el);
+      });
+    });
+  }
+  $("tadd").addEventListener("click",function(){
+    if(!$("tt").value.trim()||!$("tb").value.trim()){msg($("tmsg"),"اكتب العنوان والنص");return;}
+    db.collection("articles").add({title:$("tt").value.trim(),body:$("tb").value.trim(),ts:firebase.firestore.FieldValue.serverTimestamp()})
+      .then(function(){msg($("tmsg"),"اتنشر على صفحة المواضيع",true);$("tt").value=$("tb").value="";drawArts();})
+      .catch(function(err){msg($("tmsg"),"خطأ: "+err.message);});
+  });
+  $("alist").addEventListener("click",function(e){
+    var id=e.target.getAttribute&&e.target.getAttribute("data-del");
+    if(id&&confirm("متأكد من مسح الموضوع؟"))db.collection("articles").doc(id).delete().then(drawArts);
+  });
+
+  $("tp").addEventListener("click",function(){$("tp").className="on";$("ta").className="";$("prods").classList.remove("hide");$("arts").classList.add("hide");});
+  $("ta").addEventListener("click",function(){$("ta").className="on";$("tp").className="";$("arts").classList.remove("hide");$("prods").classList.add("hide");drawArts();});
+
+  $("go").addEventListener("click",function(){
+    auth.signInWithEmailAndPassword($("em").value.trim(),$("pw").value).catch(function(err){
+      msg($("lmsg"),err.code==="auth/invalid-credential"?"الإيميل أو الباسورد غلط":err.message);
+    });
+  });
+  $("pw").addEventListener("keydown",function(e){if(e.key==="Enter")$("go").click();});
+  $("out").addEventListener("click",function(e){e.preventDefault();auth.signOut();});
+  auth.onAuthStateChanged(function(u){
+    $("login").classList.toggle("hide",!!u);
+    $("app").classList.toggle("hide",!u);
+    $("out").classList.toggle("hide",!u);
+    if(u)drawList();
+  });
+})();
+</script>
+</body></html>
