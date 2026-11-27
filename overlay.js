@@ -44,6 +44,8 @@
     }).catch(function () {});
     if (document.getElementById("arts")) loadArticles(db);
     addFloat();
+    productExtras();
+    revealOnScroll();
   }
 
   // زرار واتساب ثابت في كل الصفحات (بياخد الرقم من لينكات الصفحة نفسها)
@@ -57,6 +59,52 @@
     f.setAttribute("aria-label", "واتساب");
     f.innerHTML = '<svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.3.6 4.4 1.8 6.3L4 29l7.9-1.7c1.2.6 2.7.9 4.1.9 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 22c-1.3 0-2.6-.3-3.7-.9l-.4-.2-4.1.9.9-4-.3-.4C7.4 18.7 7 16.9 7 15c0-5 4-9 9-9s9 4 9 9-4 10-9 10zm4.9-7.4c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.1-.4-2.2-1.3-.8-.7-1.3-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5s-.6-1.4-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/></svg>';
     document.body.appendChild(f);
+  }
+
+
+  // صفحات المنتجات: شريط واتساب ثابت + منتجات مشابهة
+  function productExtras() {
+    var mm = location.pathname.match(/\/p\/([^/]+)\.html$/);
+    if (!mm) return;
+    var fn = decodeURIComponent(mm[1]);
+
+    var wa = document.querySelector('.cta a[href*="wa.me/"]');
+    var telA = document.querySelector('a[href^="tel:"]');
+    if (wa && !document.querySelector(".stickywa")) {
+      document.body.classList.add("hassticky");
+      var bar = document.createElement("div");
+      bar.className = "stickywa";
+      bar.innerHTML = '<a class="w" href="' + wa.href + '">استفسر عن الموديل واتساب</a>' +
+        (telA ? '<a class="c" href="' + telA.href + '">اتصال</a>' : "");
+      document.body.appendChild(bar);
+    }
+
+    fetch("../products.json").then(function (r) { return r.json(); }).then(function (list) {
+      var me = null;
+      for (var i = 0; i < list.length; i++) if (list[i].fn === fn) { me = list[i]; break; }
+      if (!me) return;
+      var rel = list.filter(function (p) { return p.tab === me.tab && p.fn !== fn; }).slice(0, 4);
+      if (!rel.length) return;
+      var foot = document.querySelector("footer");
+      if (!foot) return;
+      var box = document.createElement("div");
+      box.className = "prod related";
+      box.innerHTML = '<div class="sect"><h2>منتجات مشابهة</h2></div><div class="relgrid">' + rel.map(function (p) {
+        return '<a href="../p/' + encodeURIComponent(p.fn) + '.html"><img src="../img/' + encodeURIComponent(p.fn) + '.jpg" alt="' + esc(p.model || p.fn) + '" loading="lazy" onerror="this.style.display=\'none\'"><b>' + esc(p.name || p.model || p.fn) + '</b><span>' + esc(p.model || p.fn) + "</span></a>";
+      }).join("") + "</div>";
+      foot.parentNode.insertBefore(box, foot);
+    }).catch(function () {});
+  }
+
+  // ظهور العناصر تدريجيًا عند النزول (ما بيشتغلش لو المتصفح قديم)
+  function revealOnScroll() {
+    if (!("IntersectionObserver" in window)) return;
+    var els = document.querySelectorAll(".trust>div,.howsteps>div,.ctile,.artlink");
+    if (!els.length) return;
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    Array.prototype.forEach.call(els, function (el) { el.classList.add("reveal"); io.observe(el); });
   }
 
   // الصفحة الرئيسية: أسعار وتعديلات وإخفاء على المنتجات الموجودة + منتجات جديدة
