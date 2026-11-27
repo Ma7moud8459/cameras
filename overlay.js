@@ -182,10 +182,13 @@
     var hasFoot = s.footerText || wa || tel || s.mapUrl || s.tiktok || s.instagram || s.snapchat || s.x || s.haraj || s.address || s.brand;
     var foot = document.querySelector("footer");
     if (foot && hasFoot) {
+      // الرقم الافتراضي من الفوتر الثابت لو الإعدادات مفيهاش رقم
+      var oldA = foot.querySelector('a.phone');
       var parts = [];
       parts.push(esc(s.footerText || "للتركيب والاستفسار - اتصال أو واتساب"));
       if (wa) parts.push('<a class="phone" href="https://wa.me/' + wa + '">' + esc(phoneShow || ("+" + wa)) + "</a>");
       else if (tel) parts.push('<a class="phone" href="tel:+' + tel + '">' + esc(phoneShow || ("+" + tel)) + "</a>");
+      else if (oldA) parts.push(oldA.outerHTML);
       var social = [];
       if (tel && wa) social.push('<a href="tel:+' + tel + '">اتصال</a>');
       if (s.mapUrl) social.push('<a href="' + esc(s.mapUrl) + '">الموقع على الخريطة</a>');
