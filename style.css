@@ -30,7 +30,7 @@ a{color:var(--goldink);text-decoration:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:block;color:inherit;transition:transform .15s,border-color .15s}
 .card:hover{transform:translateY(-3px);border-color:var(--gold)}
-.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#fff}
+.card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;background:#fff;padding:6px;box-sizing:border-box}
 .card .t{padding:10px 12px;font-size:13.5px;line-height:1.55;min-height:64px}
 .card .m{color:var(--goldink);font-size:12px;direction:ltr;text-align:right;padding:0 12px 12px;font-weight:700}
 .sect{margin:34px 0 10px;display:flex;align-items:center;gap:12px}
