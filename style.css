@@ -180,3 +180,15 @@ body.hassticky .wafloat{display:none}
 .reveal.in{opacity:1;transform:none}
 @media(max-width:480px){.hero .inner{padding-top:56px;padding-bottom:46px}}
 body.hassticky footer{margin-bottom:64px}
+.pmodel{color:var(--mut);font-size:15px;margin:2px 0 14px}
+.pmodel bdi{color:var(--gold);font-weight:700}
+.specs{margin:8px 0 6px}
+.specs h2{font-size:20px;margin-bottom:12px;color:var(--gold)}
+.specs table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14.5px}
+.specs th,.specs td{padding:10px 13px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+.specs th{width:38%;color:var(--mut);font-weight:700}
+.specs td{color:var(--ink)}
+.specs tr.sec th{background:#14203a;color:var(--gold);font-size:15px;padding:9px 13px}
+.spec-feats h3{font-size:17px;margin:18px 0 10px;color:var(--gold)}
+.spec-feats ul{list-style:none;padding:0;display:grid;gap:8px}
+.spec-feats li{background:var(--panel);border:1px solid var(--line);border-right:3px solid var(--gold);padding:9px 13px;border-radius:8px;font-size:14.5px}
