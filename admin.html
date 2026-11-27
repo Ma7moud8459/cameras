@@ -23,7 +23,11 @@ button.danger{background:#c0392b;color:#fff}
 .row img{width:56px;height:56px;object-fit:contain;background:#fff;border-radius:8px}
 .row .inf{flex:1;min-width:0}.row .m{color:var(--gold);font-size:13px;direction:ltr;text-align:right}
 .row .n{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row input[type=text].prc{width:110px;flex:none;padding:6px}
+.row input[type=text].prc{width:90px;flex:none;padding:6px}
+.row input[type=text].prc2{width:80px;flex:none;padding:6px}
+.row input[type=text].bdg{width:84px;flex:none;padding:6px}
+.slidebox{border:1px dashed var(--line);border-radius:12px;padding:10px;margin:10px 0}
+.slidebox img{width:100%;max-width:220px;border-radius:8px;display:block;margin:6px 0}
 .row button{padding:6px 12px;font-size:13px}
 .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
 .msg{padding:10px;border-radius:10px;margin:10px 0;font-size:14px}
@@ -59,6 +63,8 @@ button.danger{background:#c0392b;color:#fff}
         <label>القسم</label><select id="atab"><option value="HIK">كاميرات وأجهزة هيكفيجن</option><option value="EZVIZ">كاميرات إيزفيز</option><option value="NET">أجهزة الشبكات</option><option value="NONCCTV">شاشات وإكسسوارات</option></select>
         <label>المميزات (كل ميزة في سطر)</label><textarea id="afeats" rows="3"></textarea>
         <label>السعر (اختياري - اكتبه زي ما تحب يظهر، مثال: 1850 أو 1850 ريال)</label><input type="text" id="aprice" dir="ltr">
+        <label>السعر قبل الخصم (اختياري - هيظهر مشطوب جنب السعر)</label><input type="text" id="apriceold" dir="ltr">
+        <label>شارة على المنتج (اختياري - مثال: الأكثر مبيعا، عرض، جديد)</label><input type="text" id="abadge">
         <label>صورة المنتج</label><input type="file" id="aimg" accept="image/*">
         <div style="margin-top:12px"><button id="aadd">إضافة المنتج</button></div>
         <div id="amsg"></div>
@@ -102,6 +108,15 @@ button.danger{background:#c0392b;color:#fff}
         <b>شريط العروض</b>
         <label><input type="checkbox" id="sbannerOn" style="width:auto"> إظهار شريط عرض فوق الموقع</label>
         <label>نص العرض</label><input type="text" id="sbanner">
+      </div>
+      <div class="box">
+        <b>سلايدر العروض في الصفحة الرئيسية</b> <span class="small">(لما يتفعل بياخد مكان الهيدر الكبير - كل شريحة بصورة وعنوان وزرار)</span>
+        <label><input type="checkbox" id="ssliderOn" style="width:auto"> تفعيل السلايدر</label>
+        <div id="slidesList"></div>
+        <div style="margin-top:8px"><button class="ghost" id="slideAdd">+ إضافة شريحة</button></div>
+        <div class="small">ملحوظة: صورة كل شريحة بتتصغّر تلقائي - الأفضل صورة عريضة (بانر). لحد 5 شرائح.</div>
+        <div style="margin-top:10px"><button id="ssave2">حفظ السلايدر</button></div>
+        <div id="smsg2"></div>
       </div>
       <div style="margin:12px 0"><button id="ssave">حفظ الإعدادات</button> <button class="ghost" id="sbackup">نسخة احتياطية (تحميل)</button></div>
       <div id="smsg"></div>
@@ -175,11 +190,11 @@ button.danger{background:#c0392b;color:#fff}
     var list=base.map(function(p){
       var m=over[encId(p.fn)]||{};
       seen[encId(p.fn)]=1;
-      return {fn:p.fn,model:p.model,name:m.name||p.name,price:m.price||"",feats:m.feats||null,img:m.img||("img/"+p.fn+".jpg"),added:false,hidden:!!m.hidden};
+      return {fn:p.fn,model:p.model,name:m.name||p.name,price:m.price||"",priceOld:m.priceOld||"",badge:m.badge||"",feats:m.feats||null,img:m.img||("img/"+p.fn+".jpg"),added:false,hidden:!!m.hidden};
     });
     Object.keys(over).forEach(function(id){
       var m=over[id];
-      if(m&&m.added&&!seen[id]) list.unshift({fn:m.fn,model:m.model||m.fn,name:m.name||m.fn,price:m.price||"",feats:m.feats||[],img:m.img||"",added:true,hidden:!!m.hidden});
+      if(m&&m.added&&!seen[id]) list.unshift({fn:m.fn,model:m.model||m.fn,name:m.name||m.fn,price:m.price||"",priceOld:m.priceOld||"",badge:m.badge||"",feats:m.feats||[],img:m.img||"",added:true,hidden:!!m.hidden});
     });
     return list;
   }
@@ -191,6 +206,8 @@ button.danger{background:#c0392b;color:#fff}
       return '<div class="row">'+(p.img?'<img src="'+esc(p.img)+'" loading="lazy">':"")+
         '<div class="inf"><div class="m">'+esc(p.model)+'</div><div class="n">'+esc(p.name)+'</div></div>'+
         '<input type="text" class="prc" dir="ltr" placeholder="السعر" value="'+esc(p.price)+'" data-fn="'+esc(p.fn)+'">'+
+        '<input type="text" class="prc2" dir="ltr" placeholder="قبل الخصم" value="'+esc(p.priceOld)+'" data-fn="'+esc(p.fn)+'">'+
+        '<input type="text" class="bdg" placeholder="شارة" value="'+esc(p.badge)+'" data-fn="'+esc(p.fn)+'">'+
         '<button data-save="'+esc(p.fn)+'">حفظ</button>'+
         '<button class="ghost" data-edit="'+esc(p.fn)+'">تعديل</button>'+
         '<button class="ghost" data-hide="'+esc(p.fn)+'">'+(p.hidden?'إظهار':'إخفاء')+'</button>'+
@@ -204,8 +221,10 @@ button.danger{background:#c0392b;color:#fff}
     if(t.hasAttribute("data-save")){
       var fn=t.getAttribute("data-save");
       var inp=document.querySelector('input.prc[data-fn="'+CSS.escape(fn)+'"]');
+      var inp2=document.querySelector('input.prc2[data-fn="'+CSS.escape(fn)+'"]');
+      var inp3=document.querySelector('input.bdg[data-fn="'+CSS.escape(fn)+'"]');
       var p=merged().find(function(x){return x.fn===fn;});
-      var doc={fn:fn,model:p.model,name:p.name,price:inp.value.trim()};
+      var doc={fn:fn,model:p.model,name:p.name,price:inp.value.trim(),priceOld:inp2.value.trim(),badge:inp3.value.trim()};
       if(p.added)doc.added=true;
       if(p.feats)doc.feats=p.feats;
       if(p.img&&p.added)doc.img=p.img;
@@ -241,12 +260,12 @@ button.danger{background:#c0392b;color:#fff}
     if(!$("aname").value.trim()){msg($("amsg"),"اكتب اسم المنتج");return;}
     var doc={fn:fn,model:fn,name:$("aname").value.trim(),tab:$("atab").value,
       feats:$("afeats").value.split("\n").map(function(s){return s.trim();}).filter(Boolean),
-      price:$("aprice").value.trim(),added:true};
+      price:$("aprice").value.trim(),priceOld:$("apriceold").value.trim(),badge:$("abadge").value.trim(),added:true};
     $("aadd").disabled=true;
     var file=$("aimg").files[0];
     function save(){return db.collection("products").doc(encId(fn)).set(doc).then(function(){
       msg($("amsg"),"تمت الإضافة - المنتج ظهر على الموقع",true);
-      $("afn").value=$("aname").value=$("afeats").value=$("aprice").value="";$("aimg").value="";
+      $("afn").value=$("aname").value=$("afeats").value=$("aprice").value=$("apriceold").value=$("abadge").value="";$("aimg").value="";
       $("aadd").disabled=false;loadOver();
     });}
     if(file){
@@ -280,7 +299,7 @@ button.danger{background:#c0392b;color:#fff}
   function showTab(id){["tp","ta","ts"].forEach(function(x){$(x).className=x===id?"on":"";});["prods","arts","sets"].forEach(function(x){$(x).classList.add("hide");});}
   $("tp").addEventListener("click",function(){showTab("tp");$("prods").classList.remove("hide");});
   $("ta").addEventListener("click",function(){showTab("ta");$("arts").classList.remove("hide");drawArts();});
-  $("ts").addEventListener("click",function(){showTab("ts");$("sets").classList.remove("hide");loadSettings();});
+  $("ts").addEventListener("click",function(){showTab("ts");$("sets").classList.remove("hide");loadSettings();loadSlider();});
 
   // إعدادات الموقع
   function loadSettings(){
@@ -328,6 +347,80 @@ button.danger{background:#c0392b;color:#fff}
       img.src=URL.createObjectURL(file);
     });
   }
+  // سلايدر العروض: تعديل الشرائح
+  var SLIDES=[];
+  function slideRow(s,i){
+    return '<div class="slidebox" data-i="'+i+'">'+
+      (s.img?'<img src="'+s.img+'" alt="">':"")+
+      '<label>صورة الشريحة'+(s.img?" (سيبه فاضي لو عايز نفس الصورة)":" (مطلوبة)")+'</label><input type="file" class="slimg" accept="image/*">'+
+      '<label>العنوان</label><input type="text" class="sltitle" value="'+esc(s.title||"")+'">'+
+      '<label>النص تحت العنوان</label><input type="text" class="sltext" value="'+esc(s.text||"")+'">'+
+      '<label>نص الزرار (اختياري)</label><input type="text" class="slbtn" value="'+esc(s.btn||"")+'">'+
+      '<label>لينك الزرار (مثال: https://wa.me/966569278151)</label><input type="text" class="sllink" dir="ltr" value="'+esc(s.link||"")+'">'+
+      '<div style="margin-top:8px"><button class="danger" data-sldel="'+i+'">مسح الشريحة</button></div></div>';
+  }
+  function drawSlides(){
+    $("slidesList").innerHTML=SLIDES.map(slideRow).join("")||( '<p class="small">مفيش شرائح لسه - دوس "إضافة شريحة".</p>');
+  }
+  function shrinkSlide(file){
+    return new Promise(function(ok,no){
+      var img=new Image();
+      img.onload=function(){
+        var max=1000,w=img.width,hh=img.height;
+        if(w>max){hh=Math.round(hh*max/w);w=max;}
+        var c=document.createElement("canvas");c.width=w;c.height=hh;
+        c.getContext("2d").drawImage(img,0,0,w,hh);
+        URL.revokeObjectURL(img.src);
+        ok(c.toDataURL("image/jpeg",0.72));
+      };
+      img.onerror=function(){no(new Error("الملف ده مش صورة"));};
+      img.src=URL.createObjectURL(file);
+    });
+  }
+  $("slideAdd").addEventListener("click",function(){
+    if(SLIDES.length>=5){alert("لحد 5 شرائح");return;}
+    SLIDES.push({img:"",title:"",text:"",btn:"",link:""});drawSlides();
+  });
+  $("slidesList").addEventListener("click",function(e){
+    var t=e.target;
+    if(t.hasAttribute("data-sldel")){SLIDES.splice(+t.getAttribute("data-sldel"),1);drawSlides();}
+  });
+  function collectSlides(){
+    var rows=document.querySelectorAll("#slidesList .slidebox");
+    var out=[],chain=Promise.resolve();
+    rows.forEach(function(r,i){
+      var s=SLIDES[+r.getAttribute("data-i")];
+      chain=chain.then(function(){
+        var f=r.querySelector(".slimg").files[0];
+        function put(img){
+          out.push({img:img,title:r.querySelector(".sltitle").value.trim(),text:r.querySelector(".sltext").value.trim(),
+            btn:r.querySelector(".slbtn").value.trim(),link:r.querySelector(".sllink").value.trim()});
+        }
+        if(f)return shrinkSlide(f).then(put);
+        put(s.img||"");
+      });
+    });
+    return chain.then(function(){return out;});
+  }
+  function loadSlider(){
+    db.collection("settings").doc("slider").get().then(function(d){
+      var s=d.exists?d.data():{};
+      $("ssliderOn").checked=!!s.on;
+      SLIDES=Array.isArray(s.slides)?s.slides:[];
+      drawSlides();
+    });
+  }
+  $("ssave2").addEventListener("click",function(){
+    $("ssave2").disabled=true;
+    collectSlides().then(function(slides){
+      var bad=slides.filter(function(x){return !x.img;}).length;
+      if($("ssliderOn").checked&&(!slides.length||bad)){msg($("smsg2"),"كل شريحة محتاجة صورة - أو اقفل السلايدر");$("ssave2").disabled=false;return;}
+      return db.collection("settings").doc("slider").set({on:$("ssliderOn").checked,slides:slides}).then(function(){
+        msg($("smsg2"),"اتحفظ السلايدر - ظاهر على الموقع",true);$("ssave2").disabled=false;SLIDES=slides;drawSlides();
+      });
+    }).catch(function(err){$("ssave2").disabled=false;msg($("smsg2"),"خطأ: "+err.message);});
+  });
+
   // نسخة احتياطية: كل البيانات في ملف JSON
   $("sbackup").addEventListener("click",function(){
     Promise.all([db.collection("products").get(),db.collection("articles").get(),db.collection("settings").doc("site").get()]).then(function(r){

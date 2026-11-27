@@ -37,6 +37,10 @@
     }).catch(function () {});
     db.collection("settings").doc("site").get().then(function (d) {
       if (d.exists) applySettings(d.data());
+      buildDrawer(d.exists ? d.data() : {});
+    }).catch(function () { buildDrawer({}); });
+    db.collection("settings").doc("slider").get().then(function (d) {
+      if (d.exists) renderSlider(d.data());
     }).catch(function () {});
     if (document.getElementById("arts")) loadArticles(db);
     addFloat();
@@ -50,7 +54,8 @@
     var f = document.createElement("a");
     f.className = "wafloat";
     f.href = a.href;
-    f.textContent = "واتساب";
+    f.setAttribute("aria-label", "واتساب");
+    f.innerHTML = '<svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.3.6 4.4 1.8 6.3L4 29l7.9-1.7c1.2.6 2.7.9 4.1.9 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 22c-1.3 0-2.6-.3-3.7-.9l-.4-.2-4.1.9.9-4-.3-.4C7.4 18.7 7 16.9 7 15c0-5 4-9 9-9s9 4 9 9-4 10-9 10zm4.9-7.4c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.1-.4-2.2-1.3-.8-.7-1.3-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5s-.6-1.4-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/></svg>';
     document.body.appendChild(f);
   }
 
@@ -64,17 +69,19 @@
       if (!m) continue;
       if (m.hidden) { window.P.splice(i, 1); changed = true; continue; }
       if (m.price != null) { if (p.price !== m.price) { p.price = m.price === "" ? undefined : m.price; changed = true; } }
+      if (m.priceOld != null) { if (p.priceOld !== m.priceOld) { p.priceOld = m.priceOld === "" ? undefined : m.priceOld; changed = true; } }
+      if (m.badge != null) { if (p.badge !== m.badge) { p.badge = m.badge === "" ? undefined : m.badge; changed = true; } }
       if (m.name) { p.name = m.name; changed = true; }
       if (m.img) { p.img = m.img; changed = true; }
     }
     Object.keys(map).forEach(function (id) {
       var m = map[id];
       if (m && m.added && !m.hidden && m.fn && !window.P.some(function (p) { return p.fn === m.fn; })) {
-        window.P.push({ fn: m.fn, tab: m.tab || "NONCCTV", model: m.model || m.fn, name: m.name || m.fn, price: m.price, img: m.img, added: true });
+        window.P.push({ fn: m.fn, tab: m.tab || "NONCCTV", model: m.model || m.fn, name: m.name || m.fn, price: m.price, priceOld: m.priceOld, badge: m.badge, img: m.img, added: true });
         changed = true;
       }
     });
-    if (changed) window.draw();
+    if (changed) { window.draw(); if (window.tiles) window.tiles(); }
     // عداد المنتجات في الهيدر بيتحدث مع الإضافة والإخفاء
     var st = document.querySelector(".stats b");
     if (st) st.textContent = window.P.length;
@@ -106,7 +113,7 @@
       if (cta && !document.querySelector(".pricebox")) {
         var d = document.createElement("div");
         d.className = "pricebox";
-        d.innerHTML = "السعر: <b>" + esc(m.price) + "</b>";
+        d.innerHTML = "السعر: " + (m.priceOld ? '<span class="old">' + esc(m.priceOld) + "</span>" : "") + "<b>" + esc(m.price) + "</b>" + (m.badge ? '<span class="pchip">' + esc(m.badge) + "</span>" : "");
         cta.parentNode.insertBefore(d, cta);
       }
     }
@@ -225,6 +232,88 @@
       cp.innerHTML = h;
     }
   }
+
+  // القائمة الجانبية: أقسام المنتجات (قابلة للفتح) + لينكات الموقع - في كل الصفحات
+  var DEFCATS = { HIK: "كاميرات وأجهزة هيكفيجن", EZVIZ: "كاميرات إيزفيز", NET: "أجهزة الشبكات", NONCCTV: "شاشات وإكسسوارات" };
+  function buildDrawer(s) {
+    if (document.querySelector(".burger")) return;
+    var pre = /\/(p|articles)\//.test(location.pathname) ? "../" : "";
+    var cats = (typeof T !== "undefined") ? T : DEFCATS;
+    if (s && s.cats) { cats = {}; Object.keys(DEFCATS).forEach(function (k) { cats[k] = (s.cats && s.cats[k]) || (typeof T !== "undefined" && T[k]) || DEFCATS[k]; }); }
+
+    var burger = document.createElement("button");
+    burger.className = "burger";
+    burger.setAttribute("aria-label", "القائمة الرئيسية");
+    burger.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f5b301" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+    var tb = document.querySelector(".topbar");
+    if (tb) tb.insertBefore(burger, tb.firstChild);
+
+    var veil = document.createElement("div");
+    veil.className = "dveil";
+    var dr = document.createElement("aside");
+    dr.className = "drawer";
+    var html = '<div class="drawer-head">القائمة الرئيسية<button class="drawer-x" aria-label="قفل">×</button></div><div class="drawer-cats">';
+    Object.keys(cats).forEach(function (k) {
+      var items = (typeof P !== "undefined") ? P.filter(function (p) { return p.tab === k; }) : [];
+      html += '<div class="dcat"><button class="dcat-head">' + esc(cats[k]) + '<span class="pl">+</span></button><div class="dcat-body">' +
+        '<a class="all" href="' + pre + 'index.html#cat=' + k + '">عرض الكل' + (items.length ? " (" + items.length + ")" : "") + "</a>";
+      items.slice(0, 5).forEach(function (p) {
+        var href = p.added ? (pre + "p/new.html?fn=" + encodeURIComponent(p.fn)) : (pre + "p/" + p.fn + ".html");
+        html += '<a href="' + href + '">' + esc(p.name) + "</a>";
+      });
+      html += "</div></div>";
+    });
+    html += "</div>" + '<div class="dlinks">' +
+      '<a href="' + pre + 'index.html">كل المنتجات</a>' +
+      '<a href="' + pre + 'articles/">المواضيع</a>' +
+      '<a href="' + pre + 'contact.html">تواصل معنا</a>' +
+      '<a href="' + pre + 'faq.html">الأسئلة الشائعة</a>' +
+      '<a href="' + pre + 'privacy.html">الخصوصية</a></div>';
+    dr.innerHTML = html;
+    document.body.appendChild(veil);
+    document.body.appendChild(dr);
+    function openD() { dr.classList.add("open"); veil.classList.add("open"); }
+    function closeD() { dr.classList.remove("open"); veil.classList.remove("open"); }
+    burger.addEventListener("click", openD);
+    veil.addEventListener("click", closeD);
+    dr.querySelector(".drawer-x").addEventListener("click", closeD);
+    Array.prototype.forEach.call(dr.querySelectorAll(".dcat-head"), function (b) {
+      b.addEventListener("click", function () { b.parentNode.classList.toggle("open"); });
+    });
+  }
+
+  // سلايدر العروض في الرئيسية: بينزل مكان الهيدر الثابت لما يكون مفعّل من اللوحة
+  function renderSlider(cfg) {
+    var slides = (cfg && cfg.on && Array.isArray(cfg.slides)) ? cfg.slides.filter(function (x) { return x && x.img; }) : [];
+    if (!slides.length) return;
+    var hero = document.querySelector(".hero");
+    if (!hero) return;
+    hero.style.display = "none";
+    var wrap = document.createElement("div");
+    wrap.className = "slider";
+    wrap.innerHTML = '<div class="slides">' + slides.map(function (s, i) {
+      var inner = '<div class="sveil"></div><div class="sinner">' +
+        (s.title ? "<h2>" + esc(s.title) + "</h2>" : "") +
+        (s.text ? "<p>" + esc(s.text) + "</p>" : "") +
+        (s.btn && s.link ? '<a class="btn" href="' + esc(s.link) + '">' + esc(s.btn) + "</a>" : "") + "</div>";
+      return '<div class="slide"><img class="sbg" src="' + esc(s.img) + '" alt="">' + inner + "</div>";
+    }).join("") + "</div>" +
+      (slides.length > 1 ? '<div class="sdots">' + slides.map(function (s, i) { return '<button data-i="' + i + '"' + (i === 0 ? ' class="on"' : "") + '></button>'; }).join("") + "</div>" : "");
+    hero.parentNode.insertBefore(wrap, hero.nextSibling);
+    if (slides.length < 2) return;
+    var track = wrap.querySelector(".slides"), cur = 0, timer;
+    function go(i) {
+      cur = (i + slides.length) % slides.length;
+      track.style.transform = "translateX(" + (cur * 100) + "%)"; // RTL: الشرائح بتتحرك لليمين
+      Array.prototype.forEach.call(wrap.querySelectorAll(".sdots button"), function (b, j) { b.className = j === cur ? "on" : ""; });
+    }
+    Array.prototype.forEach.call(wrap.querySelectorAll(".sdots button"), function (b) {
+      b.addEventListener("click", function () { go(+b.getAttribute("data-i")); reset(); });
+    });
+    function reset() { clearInterval(timer); timer = setInterval(function () { go(cur + 1); }, 5000); }
+    reset();
+  }
+  window.__renderSlider = renderSlider; // للتجربة من الكونسول من غير حفظ
 
   // لينكات صفحات الموقع تحت الفوتر (مسارات نسبية حسب مكان الصفحة)
   function navLinks() {

@@ -21,6 +21,8 @@
 </div>
 </section>
 <div class="wrap">
+<div class="sect"><h2>تسوق حسب القسم</h2></div>
+<div class="catiles" id="catiles"></div>
 <div class="toolbar"><input id="q" type="search" placeholder="ابحث بالموديل أو الاسم..." oninput="draw()"></div>
 <div class="tabs" id="tabs"></div>
 <p class="count" id="count"></p>
@@ -33,16 +35,27 @@ let tab='ALL';
 const tabsEl=document.getElementById('tabs'), grid=document.getElementById('grid'), count=document.getElementById('count');
 function tabs(){
   const cats=['ALL',...Object.keys(T)];
-  tabsEl.innerHTML=cats.map(k=>`<button class="${k===tab?'on':''}" onclick="tab='${k}';tabs();draw()">${k==='ALL'?'الكل':T[k]}</button>`).join('');
+  tabsEl.innerHTML=cats.map(k=>`<button class="${k===tab?'on':''}" onclick="tab='${k}';location.hash=k==='ALL'?'':'cat='+k;tabs();draw()">${k==='ALL'?'الكل':T[k]}</button>`).join('');
 }
 function draw(){
   const q=document.getElementById('q').value.trim().toLowerCase();
   const list=P.filter(p=>(tab==='ALL'||p.tab===tab)&&(!q||p.model.toLowerCase().includes(q)||p.name.toLowerCase().includes(q)));
   count.textContent=list.length+' منتج';
-  grid.innerHTML=list.map(p=>`<a class="card" href="${p.added?('p/new.html?fn='+encodeURIComponent(p.fn)):('p/'+p.fn+'.html')}"><img src="${p.img||('img/'+p.fn+'.jpg')}" alt="${p.model}" loading="lazy"><div class="t">${p.name}</div><div class="m">${p.model}</div>${p.price?'<div class="pr">'+p.price+'</div>':''}</a>`).join('');
+  grid.innerHTML=list.map(p=>`<a class="card" href="${p.added?('p/new.html?fn='+encodeURIComponent(p.fn)):('p/'+p.fn+'.html')}">${p.badge?'<span class="ribbon">'+p.badge+'</span>':''}<img src="${p.img||('img/'+p.fn+'.jpg')}" alt="${p.model}" loading="lazy"><div class="t">${p.name}</div><div class="m">${p.model}</div>${p.price?'<div class="pr">'+(p.priceOld?'<span class="old">'+p.priceOld+'</span>':'')+p.price+'</div>':''}</a>`).join('');
 }
-tabs();draw();
-window.P=P;window.draw=draw;window.T=T;
+function tiles(){
+  const el=document.getElementById('catiles');
+  if(!el)return;
+  el.innerHTML=Object.keys(T).map(k=>{
+    const items=P.filter(p=>p.tab===k);
+    const im=items.length?(items[0].img||('img/'+items[0].fn+'.jpg')):'hero.jpg';
+    return `<button class="ctile" onclick="tab='${k}';location.hash='cat=${k}';tabs();draw();document.querySelector('.toolbar').scrollIntoView({behavior:'smooth'})"><img src="${im}" alt="" loading="lazy"><span>${T[k]}</span><b>${items.length} منتج</b></button>`;
+  }).join('');
+}
+function hashCat(){const m=location.hash.match(/cat=([A-Za-z]+)/);if(m&&T[m[1]])tab=m[1];}
+hashCat();tabs();draw();tiles();
+window.addEventListener('hashchange',()=>{hashCat();tabs();draw();});
+window.P=P;window.draw=draw;window.T=T;window.tiles=tiles;
 </script>
 <script src="firebase-config.js"></script><script src="overlay.js"></script>
 </body></html>

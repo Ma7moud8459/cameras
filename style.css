@@ -63,3 +63,57 @@ footer .addr{margin-top:8px;color:var(--mut);font-size:13px}
 footer .small{margin-top:8px;font-size:12px;color:var(--mut)}
 .gone{background:#4a1626;color:#ffb3c0;border-radius:10px;padding:10px;margin-bottom:14px;font-size:14px}
 .wafloat{position:fixed;bottom:18px;left:18px;z-index:50;background:#22c55e;color:#fff;border-radius:50px;padding:12px 20px;font-weight:700;text-decoration:none;box-shadow:0 6px 20px #0006;font-size:15px}
+
+/* القائمة الجانبية */
+.burger{background:none;border:0;cursor:pointer;padding:6px;display:flex;align-items:center;flex:none}
+.burger svg{display:block}
+.dveil{position:fixed;inset:0;background:#000a;z-index:95;opacity:0;pointer-events:none;transition:opacity .25s}
+.dveil.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(320px,86vw);background:var(--bg2);border-left:1px solid var(--line);z-index:96;transform:translateX(105%);transition:transform .28s ease;overflow-y:auto;box-shadow:-8px 0 30px #0008}
+.drawer.open{transform:none}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:800;font-size:17px;position:sticky;top:0;background:var(--bg2);z-index:2}
+.drawer-x{background:#e63946;color:#fff;border:0;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;line-height:1}
+.dcat{border-bottom:1px solid var(--line)}
+.dcat-head{width:100%;background:none;border:0;color:var(--ink);font-family:inherit;font-size:15px;font-weight:700;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:right}
+.dcat-head .pl{color:var(--gold);font-size:20px;font-weight:400;transition:transform .2s}
+.dcat.open .dcat-head .pl{transform:rotate(45deg)}
+.dcat-body{display:none;padding:0 16px 12px}
+.dcat.open .dcat-body{display:block}
+.dcat-body a{display:block;color:var(--mut);font-size:14px;padding:7px 0;border-top:1px dashed #22304f66}
+.dcat-body a.all{color:var(--gold);font-weight:700}
+.dlinks{padding:12px 16px;display:grid;gap:2px}
+.dlinks a{color:var(--ink);font-size:14.5px;padding:8px 0}
+.dlinks a:hover{color:var(--gold)}
+
+/* بلاطات الأقسام في الرئيسية */
+.catiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:6px 0 8px}
+.ctile{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;font-family:inherit;color:var(--ink);padding:0;text-align:right;transition:border-color .15s,transform .15s}
+.ctile:hover{border-color:var(--gold);transform:translateY(-2px)}
+.ctile img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#fff}
+.ctile span{display:block;font-weight:700;font-size:14px;padding:9px 12px 0}
+.ctile b{display:block;color:var(--gold);font-size:12px;padding:0 12px 10px;font-weight:700}
+
+/* شارة وسعر قديم على الكروت */
+.card{position:relative}
+.ribbon{position:absolute;top:10px;right:10px;background:#e63946;color:#fff;padding:3px 11px;border-radius:20px;font-size:11.5px;font-weight:800;box-shadow:0 3px 10px #0005;z-index:2}
+.pr .old{color:var(--mut);text-decoration:line-through;font-weight:400;font-size:12px;margin-left:7px}
+.pricebox .old{color:var(--mut);text-decoration:line-through;font-size:14px;margin-left:8px}
+.pricebox .pchip{display:inline-block;background:#e63946;color:#fff;border-radius:14px;font-size:12px;padding:1px 10px;margin-right:8px}
+
+/* سلايدر العروض */
+.slider{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.slides{display:flex;transition:transform .55s ease}
+.slide{min-width:100%;position:relative;display:flex;align-items:center;min-height:320px}
+.slide img.sbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.6}
+.slide .sveil{position:absolute;inset:0;background:linear-gradient(to left,#0a1120f2 20%,#0a1120a0 60%,#0a112040)}
+.slide .sinner{position:relative;max-width:1100px;margin:0 auto;padding:60px 20px;width:100%}
+.slide h2{font-size:30px;line-height:1.35;margin-bottom:8px}
+.slide p{color:#c6d0e2;font-size:16px;max-width:480px;margin-bottom:18px}
+.sdots{position:absolute;bottom:14px;left:0;right:0;display:flex;gap:8px;justify-content:center;z-index:3}
+.sdots button{width:9px;height:9px;border-radius:50%;background:#ffffff55;border:0;cursor:pointer;padding:0}
+.sdots button.on{background:var(--gold);transform:scale(1.25)}
+@media(max-width:480px){.slide{min-height:240px}.slide .sinner{padding:40px 18px}.slide h2{font-size:23px}.slide p{font-size:14px}}
+
+/* زر واتساب دائري بأيقونة */
+.wafloat{width:58px;height:58px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.wafloat svg{width:30px;height:30px;fill:#fff}
