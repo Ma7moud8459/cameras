@@ -3,7 +3,7 @@
 # parsed from his catalog names (verifiable only; nothing guessed).
 import json, re, html
 
-V = "20261127h"
+V = "20261127i"
 BRAND = {"HIK": "هيكفيجن", "EZVIZ": "إيزفيز", "NET": "هيكفيجن", "NONCCTV": "هيكفيجن"}
 NO_BRAND_MODELS = {"IC S50", "S50+TK4100"}
 CAT = {"HIK": "كاميرات وأجهزة هيكفيجن", "EZVIZ": "كاميرات إيزفيز",
