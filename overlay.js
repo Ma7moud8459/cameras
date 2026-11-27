@@ -74,7 +74,7 @@
       document.body.classList.add("hassticky");
       var bar = document.createElement("div");
       bar.className = "stickywa";
-      bar.innerHTML = '<a class="w" href="' + wa.href + '">استفسر عن الموديل واتساب</a>' +
+      bar.innerHTML = '<a class="w" href="' + wa.href + '">استفسر عن الموديل عبر واتساب</a>' +
         (telA ? '<a class="c" href="' + telA.href + '">اتصال</a>' : "");
       document.body.appendChild(bar);
     }
@@ -152,7 +152,7 @@
       if (prod && !document.querySelector(".gone")) {
         var g = document.createElement("div");
         g.className = "gone";
-        g.textContent = "المنتج ده غير متوفر حاليًا - كلمنا للبدائل";
+        g.textContent = "هذا المنتج غير متوفر حاليًا - تواصل معنا للبدائل";
         prod.insertBefore(g, prod.firstChild.nextSibling);
       }
     }

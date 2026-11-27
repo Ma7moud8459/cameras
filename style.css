@@ -36,6 +36,7 @@ a{color:var(--gold);text-decoration:none}
 .sect{margin:34px 0 10px;display:flex;align-items:center;gap:12px}
 .sect h2{font-size:22px}
 .sect .n{color:var(--mut);font-size:14px}
+.catsec{justify-content:space-between}.catsec h2{margin:0}.catsec .more{color:var(--gold);font-size:14px;font-weight:700;white-space:nowrap;text-decoration:none}
 .prod{max-width:680px;margin:0 auto;padding:20px 16px}
 .crumb{font-size:14px;color:var(--mut);margin-bottom:14px}
 .prod .cardimg{background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
