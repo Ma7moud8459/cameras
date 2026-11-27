@@ -178,9 +178,10 @@
       else document.body.insertBefore(b, document.body.firstChild);
     }
 
-    // الفوتر + قنوات التواصل
+    // الفوتر + قنوات التواصل (نلمس الفوتر الثابت فقط لو في إعدادات فعلية ليه)
+    var hasFoot = s.footerText || wa || tel || s.mapUrl || s.tiktok || s.instagram || s.snapchat || s.x || s.haraj || s.address || s.brand;
     var foot = document.querySelector("footer");
-    if (foot) {
+    if (foot && hasFoot) {
       var parts = [];
       parts.push(esc(s.footerText || "للتركيب والاستفسار - اتصال أو واتساب"));
       if (wa) parts.push('<a class="phone" href="https://wa.me/' + wa + '">' + esc(phoneShow || ("+" + wa)) + "</a>");
@@ -199,6 +200,38 @@
       if (s.brand) html += '<div class="small">' + esc(s.brand) + "</div>";
       foot.innerHTML = html;
     }
+    // لينكات صفحات الموقع تحت الفوتر، لأي فوتر لسه مفيهوش
+    if (foot && !foot.querySelector(".channels")) foot.insertAdjacentHTML("beforeend", navLinks());
+
+    // صفحة تواصل معنا: تتملى من الإعدادات (لو في قنوات محفوظة)
+    var cp = document.getElementById("cpage");
+    if (cp && (wa || tel || s.mapUrl || s.tiktok || s.instagram || s.snapchat || s.x || s.haraj || s.address)) {
+      var rows = [];
+      if (wa) rows.push('<div><a class="btn" style="display:block;text-align:center" href="https://wa.me/' + wa + '">واتساب مباشر</a></div>');
+      if (tel) rows.push('<div><a class="btn ghost" style="display:block;text-align:center" href="tel:+' + tel + '">اتصال: ' + esc(phoneShow || ("+" + tel)) + "</a></div>");
+      if (s.mapUrl) rows.push('<div><a class="btn ghost" style="display:block;text-align:center" href="' + esc(s.mapUrl) + '">الموقع على الخريطة</a></div>');
+      var soc = [];
+      if (s.tiktok) soc.push('<a class="btn ghost" href="' + esc(s.tiktok) + '">تيك توك</a>');
+      if (s.instagram) soc.push('<a class="btn ghost" href="' + esc(s.instagram) + '">انستقرام</a>');
+      if (s.snapchat) soc.push('<a class="btn ghost" href="' + esc(s.snapchat) + '">سناب شات</a>');
+      if (s.x) soc.push('<a class="btn ghost" href="' + esc(s.x) + '">إكس</a>');
+      if (s.haraj) soc.push('<a class="btn ghost" href="' + esc(s.haraj) + '">حراج</a>');
+      if (soc.length) rows.push('<div style="display:flex;gap:8px;flex-wrap:wrap">' + soc.join("") + "</div>");
+      var h = rows.length ? '<div class="feats">' + rows.join("") + "</div>" : "";
+      h += '<p class="name">' + esc(s.address ? s.address + " - " : "") + "نخدم الدمام والمنطقة الشرقية - توريد وتركيب كاميرات مراقبة وأنظمة أمن.</p>";
+      cp.innerHTML = h;
+    }
+  }
+
+  // لينكات صفحات الموقع تحت الفوتر (مسارات نسبية حسب مكان الصفحة)
+  function navLinks() {
+    var pre = /\/(p|articles)\//.test(location.pathname) ? "../" : "";
+    return '<div class="channels">' +
+      '<a href="' + pre + 'index.html">المنتجات</a>' +
+      '<a href="' + pre + 'articles/">المواضيع</a>' +
+      '<a href="' + pre + 'contact.html">تواصل معنا</a>' +
+      '<a href="' + pre + 'faq.html">الأسئلة الشائعة</a>' +
+      '<a href="' + pre + 'privacy.html">الخصوصية</a></div>';
   }
 
   // صفحة المواضيع: عرض المقالات المنشورة من لوحة التحكم
