@@ -178,3 +178,4 @@ body.hassticky .wafloat{display:none}
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
 .reveal.in{opacity:1;transform:none}
 @media(max-width:480px){.hero .inner{padding-top:56px;padding-bottom:46px}}
+body.hassticky footer{margin-bottom:64px}
