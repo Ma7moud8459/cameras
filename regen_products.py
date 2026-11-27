@@ -3,7 +3,7 @@
 # parsed from his catalog names (verifiable only; nothing guessed).
 import json, re, html
 
-V = "20261127g"
+V = "20261127h"
 BRAND = {"HIK": "هيكفيجن", "EZVIZ": "إيزفيز", "NET": "هيكفيجن", "NONCCTV": "هيكفيجن"}
 NO_BRAND_MODELS = {"IC S50", "S50+TK4100"}
 CAT = {"HIK": "كاميرات وأجهزة هيكفيجن", "EZVIZ": "كاميرات إيزفيز",
@@ -129,57 +129,7 @@ ORDER = ["الدقة", "حجم الشاشة", "عدد القنوات", "عدد �
          "المدى", "الفئة", "التوافق", "التطبيق"]
 
 
-SEC_AR = {
- "Camera":"الكاميرا","General":"عام","Intelligent Analytics":"التحليلات الذكية",
- "System parameters":"معايير النظام","System Parameters":"معايير النظام","Display":"العرض",
- "Parameters":"المعايير","Video and Audio":"الفيديو والصوت","Motion Detection 2.0":"كشف الحركة 2.0",
- "System":"النظام","Control Unit":"وحدة التحكم","Lens":"العدسة","Video":"الفيديو","Audio":"الصوت",
- "Network":"الشبكة","Interface":"الواجهات","Image":"الصورة","Illuminator":"الإضاءة",
- "PTZ":"الحركة (PTZ)","Storage":"التخزين","Event":"الأحداث","Approval":"الاعتمادات",
- "Protection":"الحماية","Wi-Fi":"واي فاي","Deep Learning Function":"وظائف التعلم العميق",
- "Main Stream":"البث الرئيسي","Sub Stream":"البث الفرعي","Smart Function":"الوظائف الذكية",
- "Recording":"التسجيل","Decoding":"فك الترميز","HDD":"الأقراص الصلبة","External Interface":"الواجهات الخارجية",
-}
-LBL_AR = {
- "Image Sensor":"حساس الصورة","Min. Illumination":"أدنى إضاءة","Max. Resolution":"أقصى دقة",
- "Day & Night":"ليلي/نهاري","Shutter Time":"سرعة الغالق","Shutter Speed":"سرعة الغالق",
- "Angle Adjustment":"ضبط الزاوية","Signal System":"نظام الإشارة","Net Weight":"الوزن الصافي",
- "Gross Weight":"الوزن الإجمالي","Storage Temperature":"حرارة التخزين","Installation Mode":"طريقة التركيب",
- "Shell":"الهيكل","Dimensions (W × H × D)":"الأبعاد","Dimension":"الأبعاد",
- "Product Dimensions (W × H × D)":"أبعاد المنتج","Package Dimensions (W × H × D)":"أبعاد العبوة",
- "Operating Temperature":"حرارة التشغيل","Working Temperature":"حرارة العمل",
- "Operating Humidity":"رطوبة التشغيل","Relative Humidity":"رطوبة التشغيل",
- "Power Supply":"مصدر الطاقة","Max. Power Consumption":"أقصى استهلاك للطاقة",
- "Power Consumption in Idle":"الاستهلاك في الخمول","Surge Protection":"حماية من التيار المفاجئ",
- "AI by Camera":"تحليلات ذكية بالكاميرا","AI by Device":"تحليلات ذكية بالجهاز","AI by NVR":"تحليلات ذكية بالمسجل",
- "RAM":"ذاكرة الوصول العشوائي","ROM":"ذاكرة التخزين","Operation system":"نظام التشغيل",
- "Operating system":"نظام التشغيل","Processor":"المعالج","Screen size":"حجم الشاشة",
- "IP Video Input":"مدخلات فيديو IP","Incoming Bandwidth":"النطاق الوارد","Outgoing Bandwidth":"النطاق الصادر",
- "Video Output Mode":"وضع إخراج الفيديو","HDMI Output":"مخرج HDMI","VGA Output":"مخرج VGA",
- "CVBS Output":"مخرج CVBS","Audio Output":"مخرج الصوت","Two-Way Audio":"صوت ثنائي الاتجاه",
- "Frame Rate":"معدل الإطارات","Lens Mount":"تركيب العدسة","Zoom":"الزوم","Resolution":"الدقة",
- "Type":"النوع","Material":"الخامة","Appearance":"الشكل الخارجي",
- "Human/Vehicle Analysis":"تحليل الأشخاص والمركبات","Operation method":"طريقة التشغيل",
- "Engine":"المحرك","Flash":"فلاش","Packing List":"محتويات العبوة","Slow Shutter":"الغالق البطيء",
- "Description":"الوصف","Feature":"الميزة","Packing Method":"طريقة التعبئة",
-}
-
-SEC_AR.update({
- "Model Parameters":"معايير الموديل","Features":"المميزات","Specifications":"المواصفات",
- "Camera Parameters":"معايير الكاميرا","Video & Audio":"الفيديو والصوت","Function":"الوظائف",
- "Wi-Fi":"واي فاي","Battery":"البطارية","Panel":"اللوحة","Hardware":"العتاد","Others":"أخرى","Perimeter Protection":"الحماية المحيطية","Target Recognition":"التعرف على الأهداف",
- "Auxiliary Interface":"الواجهات المساعدة","Power":"الطاقة","In the box":"محتويات العبوة",
- "Software":"البرمجيات","Electrical":"الكهرباء","Physical":"المواصفات المادية","Accessory":"الملحقات",
-})
-LBL_AR.update({
- "Lens":"العدسة","IR Range":"مدى الأشعة تحت الحمراء","Viewing Angle":"زاوية الرؤية",
- "Night Vision":"الرؤية الليلية","Wi-Fi Standard":"معيار واي فاي","Battery Capacity":"سعة البطارية",
- "Local Storage":"التخزين المحلي","Cloud Storage":"التخزين السحابي","Operating Conditions":"ظروف التشغيل",
- "Power Consumption":"استهلاك الطاقة","Weight":"الوزن","Model":"الموديل",
- "Two-Way Talk":"حديث ثنائي الاتجاه","Smart Detection":"الكشف الذكي","Detection":"الكشف",
- "Max. Resolution":"أقصى دقة","Resolution":"الدقة","Storage":"التخزين","Audio":"الصوت",
- "Support":"الدعم","Dimensions":"الأبعاد","Application":"التطبيق","Color":"اللون",
-})
+from translations import SEC_AR, LBL_AR, translate_value
 
 def load_official():
     import os
@@ -200,7 +150,7 @@ TPL = """<!DOCTYPE html>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg"><meta name="theme-color" content="#0b1526"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:image" content="https://ma7moud8459.github.io/cameras/img/{fn}.jpg"><meta property="og:type" content="product"><meta name="twitter:card" content="summary_large_image"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"><meta name="theme-color" content="#ffffff"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:image" content="https://ma7moud8459.github.io/cameras/img/{fn}.jpg"><meta property="og:type" content="product"><meta name="twitter:card" content="summary_large_image"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css?v={v}"><link rel="canonical" href="https://ma7moud8459.github.io/cameras/p/{fn}.html"><script type="application/ld+json">{{"@context": "https://schema.org", "@type": "Product", "model": "{model}", "name": "{schema_name}", "image": "https://ma7moud8459.github.io/cameras/img/{fn}.jpg", "category": "{cat}", "url": "https://ma7moud8459.github.io/cameras/p/{fn}.html", "brand": {{"@type": "Brand", "name": "{brand_en}"}}}}</script>
 </head><body><div class="topbar"><span class="brand"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f5b301" stroke-width="2"><path d="M2 7l11-3 2 4-11 3z"/><path d="M13 8l8 3v7l-8-2z"/><circle cx="17" cy="13.5" r="2"/></svg> كاميرات مراقبة وأنظمة أمن</span><a class="phone" href="tel:+966569278151">0569278151</a></div><div class="prod">
@@ -245,7 +195,7 @@ def gen(p):
             body.append('<tr class="sec"><th colspan="2">' + esc(sec_ar) + "</th></tr>")
             for l, v in sec["rows"]:
                 body.append('<tr><th>{}</th><td><bdi dir="auto">{}</bdi></td></tr>'.format(
-                    esc(LBL_AR.get(l, l)), esc(v)))
+                    esc(LBL_AR.get(l, l)), esc(translate_value(v))))
         rows_html = "\n".join(body)
     else:
         for k in ORDER:
