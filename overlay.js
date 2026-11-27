@@ -1,4 +1,4 @@
-var IMG_V=(document.querySelector('link[rel=stylesheet][href*=style\.css]')||{}).href.split('v=')[1]||'';
+var IMG_V=(document.querySelector('link[rel=stylesheet][href*="style.css"]')||{}).href.split('v=')[1]||'';
 // التحديثات المباشرة: بيقرأ الأسعار والتعديلات والمنتجات والمقالات وإعدادات الموقع من قاعدة البيانات ويعرضها على الموقع.
 // لو Firebase لسه مش متظبط (firebase-config.js فيه PENDING) الملف بيخرج بهدوء والموقع يفضل شغال زي ما هو.
 (function () {
