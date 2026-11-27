@@ -252,7 +252,7 @@
     veil.className = "dveil";
     var dr = document.createElement("aside");
     dr.className = "drawer";
-    var html = '<div class="drawer-head">القائمة الرئيسية<button class="drawer-x" aria-label="قفل">×</button></div><div class="drawer-cats">';
+    var html = '<div class="drawer-head"><a class="dhome" href="' + pre + 'index.html">القائمة الرئيسية</a><button class="drawer-x" aria-label="قفل">×</button></div><div class="drawer-cats">';
     Object.keys(cats).forEach(function (k) {
       var items = (typeof P !== "undefined") ? P.filter(function (p) { return p.tab === k; }) : [];
       html += '<div class="dcat"><button class="dcat-head">' + esc(cats[k]) + '<span class="pl">+</span></button><div class="dcat-body">' +
@@ -279,6 +279,10 @@
     dr.querySelector(".drawer-x").addEventListener("click", closeD);
     Array.prototype.forEach.call(dr.querySelectorAll(".dcat-head"), function (b) {
       b.addEventListener("click", function () { b.parentNode.classList.toggle("open"); });
+    });
+    // أي لينك جوه القايمة يقفلها بعد الضغط (مهم على الموبايل وعلى لينكات الأقسام في نفس الصفحة)
+    Array.prototype.forEach.call(dr.querySelectorAll("a"), function (a) {
+      a.addEventListener("click", closeD);
     });
   }
 
