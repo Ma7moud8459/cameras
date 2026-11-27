@@ -3,7 +3,7 @@
 # parsed from his catalog names (verifiable only; nothing guessed).
 import json, re, html
 
-V = "20261127f"
+V = "20261127g"
 BRAND = {"HIK": "هيكفيجن", "EZVIZ": "إيزفيز", "NET": "هيكفيجن", "NONCCTV": "هيكفيجن"}
 NO_BRAND_MODELS = {"IC S50", "S50+TK4100"}
 CAT = {"HIK": "كاميرات وأجهزة هيكفيجن", "EZVIZ": "كاميرات إيزفيز",
@@ -163,6 +163,23 @@ LBL_AR = {
  "Engine":"المحرك","Flash":"فلاش","Packing List":"محتويات العبوة","Slow Shutter":"الغالق البطيء",
  "Description":"الوصف","Feature":"الميزة","Packing Method":"طريقة التعبئة",
 }
+
+SEC_AR.update({
+ "Model Parameters":"معايير الموديل","Features":"المميزات","Specifications":"المواصفات",
+ "Camera Parameters":"معايير الكاميرا","Video & Audio":"الفيديو والصوت","Function":"الوظائف",
+ "Wi-Fi":"واي فاي","Battery":"البطارية","Panel":"اللوحة","Hardware":"العتاد","Others":"أخرى","Perimeter Protection":"الحماية المحيطية","Target Recognition":"التعرف على الأهداف",
+ "Auxiliary Interface":"الواجهات المساعدة","Power":"الطاقة","In the box":"محتويات العبوة",
+ "Software":"البرمجيات","Electrical":"الكهرباء","Physical":"المواصفات المادية","Accessory":"الملحقات",
+})
+LBL_AR.update({
+ "Lens":"العدسة","IR Range":"مدى الأشعة تحت الحمراء","Viewing Angle":"زاوية الرؤية",
+ "Night Vision":"الرؤية الليلية","Wi-Fi Standard":"معيار واي فاي","Battery Capacity":"سعة البطارية",
+ "Local Storage":"التخزين المحلي","Cloud Storage":"التخزين السحابي","Operating Conditions":"ظروف التشغيل",
+ "Power Consumption":"استهلاك الطاقة","Weight":"الوزن","Model":"الموديل",
+ "Two-Way Talk":"حديث ثنائي الاتجاه","Smart Detection":"الكشف الذكي","Detection":"الكشف",
+ "Max. Resolution":"أقصى دقة","Resolution":"الدقة","Storage":"التخزين","Audio":"الصوت",
+ "Support":"الدعم","Dimensions":"الأبعاد","Application":"التطبيق","Color":"اللون",
+})
 
 def load_official():
     import os
