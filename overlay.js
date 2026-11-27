@@ -1,3 +1,4 @@
+var IMG_V=(document.querySelector('link[rel=stylesheet][href*=style\.css]')||{}).href.split('v=')[1]||'';
 // التحديثات المباشرة: بيقرأ الأسعار والتعديلات والمنتجات والمقالات وإعدادات الموقع من قاعدة البيانات ويعرضها على الموقع.
 // لو Firebase لسه مش متظبط (firebase-config.js فيه PENDING) الملف بيخرج بهدوء والموقع يفضل شغال زي ما هو.
 (function () {
@@ -90,7 +91,7 @@
       var box = document.createElement("div");
       box.className = "prod related";
       box.innerHTML = '<div class="sect"><h2>منتجات مشابهة</h2></div><div class="relgrid">' + rel.map(function (p) {
-        return '<a href="../p/' + encodeURIComponent(p.fn) + '.html"><img src="../img/' + encodeURIComponent(p.fn) + '.jpg" alt="' + esc(p.model || p.fn) + '" loading="lazy" onerror="this.style.display=\'none\'"><b>' + esc(p.name || p.model || p.fn) + '</b><span>' + esc(p.model || p.fn) + "</span></a>";
+        return '<a href="../p/' + encodeURIComponent(p.fn) + '.html"><img src="../img/' + encodeURIComponent(p.fn) + '.jpg?v=' + IMG_V + '" alt="' + esc(p.model || p.fn) + '" loading="lazy" onerror="this.style.display=\'none\'"><b>' + esc(p.name || p.model || p.fn) + '</b><span>' + esc(p.model || p.fn) + "</span></a>";
       }).join("") + "</div>";
       foot.parentNode.insertBefore(box, foot);
     }).catch(function () {});

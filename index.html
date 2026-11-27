@@ -57,7 +57,8 @@ const P=[{"fn": "DS-2CE76D0T-EXIPF", "tab": "HIK", "model": "DS-2CE76D0T-EXIPF",
 let tab='ALL', view='home';
 const tabsEl=document.getElementById('tabs'), grid=document.getElementById('grid'), count=document.getElementById('count'),
 homeSecsEl=document.getElementById('homeSecs'), catalogEl=document.getElementById('catalog');
-function cardHTML(p){return `<a class="card" href="${p.added?('p/new.html?fn='+encodeURIComponent(p.fn)):('p/'+p.fn+'.html')}">${p.badge?'<span class="ribbon">'+p.badge+'</span>':''}<img src="${p.img||('img/'+p.fn+'.jpg')}" alt="${p.model}" loading="lazy"><div class="t">${p.name}</div><div class="m">${p.model}</div>${p.price?'<div class="pr">'+(p.priceOld?'<span class="old">'+p.priceOld+'</span>':'')+p.price+'</div>':''}</a>`;}
+var IMG_V=(document.querySelector('link[rel=stylesheet][href*=style\.css]')||{}).href.split('v=')[1]||'';
+function cardHTML(p){return `<a class="card" href="${p.added?('p/new.html?fn='+encodeURIComponent(p.fn)):('p/'+p.fn+'.html')}">${p.badge?'<span class="ribbon">'+p.badge+'</span>':''}<img src="${p.img||('img/'+p.fn+'.jpg?v='+IMG_V)}" alt="${p.model}" loading="lazy"><div class="t">${p.name}</div><div class="m">${p.model}</div>${p.price?'<div class="pr">'+(p.priceOld?'<span class="old">'+p.priceOld+'</span>':'')+p.price+'</div>':''}</a>`;}
 function tabs(){
   const cats=['ALL',...Object.keys(T)];
   tabsEl.innerHTML=cats.map(k=>`<button class="${k===tab?'on':''}" onclick="openCat('${k}')">${k==='ALL'?'الكل':T[k]}</button>`).join('');

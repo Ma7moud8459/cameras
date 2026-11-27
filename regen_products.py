@@ -3,7 +3,7 @@
 # parsed from his catalog names (verifiable only; nothing guessed).
 import json, re, html
 
-V = "20261127i"
+V = "20261127j"
 BRAND = {"HIK": "هيكفيجن", "EZVIZ": "إيزفيز", "NET": "هيكفيجن", "NONCCTV": "هيكفيجن"}
 NO_BRAND_MODELS = {"IC S50", "S50+TK4100"}
 CAT = {"HIK": "كاميرات وأجهزة هيكفيجن", "EZVIZ": "كاميرات إيزفيز",
@@ -157,7 +157,7 @@ TPL = """<!DOCTYPE html>
 <p class="crumb"><a href="../index.html">كل المنتجات</a> ← {cat}</p>
 <h1>{h1}</h1>
 <p class="pmodel">الموديل: <bdi dir="ltr">{model}</bdi></p>
-<div class="cardimg"><img src="../img/{fn}.jpg" alt="{alt}" loading="lazy"></div>
+<div class="cardimg"><img src="../img/{fn}.jpg?v={v}" alt="{alt}" loading="lazy"></div>
 <div class="feats">{chips}</div>
 <div class="specs"><h2>المواصفات</h2>
 <table>{rows}
